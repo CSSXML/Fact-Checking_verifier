@@ -1,0 +1,6 @@
+Flask
+requests
+beautifulsoup4
+selenium
+urllib3
+spacy

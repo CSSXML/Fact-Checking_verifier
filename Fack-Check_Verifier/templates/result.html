@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .result-card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+        }
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 5px solid #ffc107;
+        }
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-left: 5px solid #dc3545;
+        }
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 5px solid #17a2b8;
+        }
+        .credibility-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .score-high { background: linear-gradient(45deg, #28a745, #20c997); }
+        .score-medium { background: linear-gradient(45deg, #ffc107, #fd7e14); }
+        .score-low { background: linear-gradient(45deg, #dc3545, #e83e8c); }
+        .keyword-highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 0.5rem 0;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.3);
+        }
+        .btn-back {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+            color: white;
+        }
+        .cache-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(108, 117, 125, 0.9);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+        .result-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .pulse-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .status-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .badge-verified { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+        .badge-questionable { background: linear-gradient(45deg, #ffc107, #fd7e14); color: white; }
+        .badge-false { background: linear-gradient(45deg, #dc3545, #e83e8c); color: white; }
+        .badge-info { background: linear-gradient(45deg, #17a2b8, #6f42c1); color: white; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="main-container p-5">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <i class="fas fa-clipboard-check header-icon text-primary pulse-icon"></i>
+                <h1 class="display-5 fw-bold text-dark mb-3">
+                    <i class="fas fa-search-plus me-2"></i>
+                    Verification Result
+                </h1>
+            </div>
+
+            <!-- Keyword Display -->
+            <div class="text-center mb-4">
+                <div class="keyword-highlight">
+                    <i class="fas fa-quote-left me-2"></i>
+                    {{ keyword }}
+                    <i class="fas fa-quote-right ms-2"></i>
+                </div>
+            </div>
+
+            <!-- Result Card -->
+            <div class="alert alert-{{ status }} result-card position-relative" role="alert">
+                {% if cached %}
+                <div class="cache-badge">
+                    <i class="fas fa-database me-1"></i>
+                    Cached Result
+                </div>
+                {% endif %}
+
+                <!-- Status Badge -->
+                {% if status == 'success' %}
+                <div class="status-badge badge-verified">
+                    <i class="fas fa-check-circle me-1"></i>
+                    VERIFIED
+                </div>
+                {% elif status == 'warning' %}
+                <div class="status-badge badge-questionable">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    QUESTIONABLE
+                </div>
+                {% elif status == 'danger' %}
+                <div class="status-badge badge-false">
+                    <i class="fas fa-times-circle me-1"></i>
+                    FALSE
+                </div>
+                {% else %}
+                <div class="status-badge badge-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    INFO
+                </div>
+                {% endif %}
+
+                <!-- Credibility Score -->
+                <div class="credibility-score mt-4">
+                    {% if credibility_score is string %}
+                        {% set score_num = credibility_score.split('/')[0] | int %}
+                    {% else %}
+                        {% set score_num = credibility_score | int %}
+                    {% endif %}
+                    {% if score_num >= 8 %}
+                    <div class="score-circle score-high">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    {% elif score_num >= 5 %}
+                    <div class="score-circle score-medium">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    {% else %}
+                    <div class="score-circle score-low">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h4 class="mb-1">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Credibility Score
+                        </h4>
+                        <h2 class="mb-0 fw-bold">
+                            {% if credibility_score is string %}
+                                {{ credibility_score }}
+                            {% else %}
+                                {{ credibility_score }}/10
+                            {% endif %}
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Result Message -->
+                <div class="result-content mt-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Analysis Results:
+                    </h5>
+                    <div class="p-3 bg-white bg-opacity-50 rounded-3">
+                        {{ result_message | safe }}
+                    </div>
+                </div>
+
+                <!-- Sources Footer -->
+                <div class="mt-4 pt-3 border-top border-light">
+                    <small class="text-muted">
+                        <i class="fas fa-globe me-1"></i>
+                        Sources verified through multiple fact-checking databases
+                        <span class="ms-3">
+                            <i class="fas fa-clock me-1"></i>
+                            Updated in real-time
+                        </span>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="/" class="btn btn-back me-3">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Search
+                </a>
+                <button class="btn btn-outline-secondary">
+                    <i class="fas fa-share-alt me-2"></i>
+                    Share Result
+                </button>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="row mt-5">
+                <div class="col-md-4 text-center">
+                    <div class="p-3">
+                        <i class="fas fa-eye text-info fs-1 mb-2"></i>
+                        <h6 class="fw-bold">Transparency</h6>
+                        <small class="text-muted">Open verification process</small>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-3">
+                        <i class="fas fa-users text-success fs-1 mb-2"></i>
+                        <h6 class="fw-bold">Community</h6>
+                        <small class="text-muted">Crowd-sourced validation</small>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="p-3">
+                        <i class="fas fa-award text-warning fs-1 mb-2"></i>
+                        <h6 class="fw-bold">Accuracy</h6>
+                        <small class="text-muted">Verified by experts</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
